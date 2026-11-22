@@ -8,7 +8,10 @@
   <title>ישראל פורטנוי — ליווי בעלי נכסים ומשקיעים</title>
   <link rel="icon" href="assets/brand.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="newsletter.css">
   <script src="site.js" defer></script>
+  <script src="leads-config.js" defer></script>
+  <script src="leads.js" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#main">דילוג לתוכן</a>
@@ -60,15 +63,24 @@
     </section>
     <section class="booklet" id="booklet" aria-labelledby="book-title"><div class="wrap book-row">
       <div class="book-art"><img class="book-page" src="assets/inside.webp" alt="" width="280" height="396" loading="lazy"><img class="book-cover" src="assets/booklet.webp" alt="עטיפת החוברת להשקיע בנכס בלי לשקוע" loading="lazy" width="280" height="396"></div>
-      <div class="book-copy"><p class="eyebrow"><i></i> החוברת של ישראל פורטנוי</p><h2 id="book-title">להשקיע בנכס<br>בלי לשקוע.</h2><p>פעם הגעתי עם מפתח לדירה שחולקה לשתי יחידות. הדלת ליחידה השנייה הייתה חסומה. דווקא השכן ידע להסביר לי מה קרה שם. את הסיפור הזה ועוד שלושה אספתי בחוברת.</p><a class="text-link" href="https://huxhkuh.github.io/israel-portnoy-booklet/">לקריאת החוברת <span aria-hidden="true">↙</span></a></div>
+      <div class="book-copy">
+        <p class="eyebrow"><i></i> החוברת של ישראל פורטנוי</p>
+        <h2 id="book-title">להשקיע בנכס<br>בלי לשקוע.</h2>
+        <p>פעם הגעתי עם מפתח לדירה שחולקה לשתי יחידות. הדלת ליחידה השנייה הייתה חסומה. דווקא השכן ידע להסביר לי מה קרה שם. את הסיפור הזה ועוד שלושה אספתי בחוברת.</p>
+        <a class="button" href="read.html">קריאה באתר <span class="arrow" aria-hidden="true">←</span></a>
+        <div class="book-downloads" role="group" aria-label="הורדת החוברת כקובץ PDF">
+          <a href="assets/להשקיע_בנכס_בלי_לשקוע_לקריאה.pdf" download>הורדת PDF רגיל <small><bdi>2.83</bdi> מ״ב</small></a>
+          <a href="assets/להשקיע_בנכס_בלי_לשקוע.pdf" download>הורדה באיכות מלאה <small><bdi>15.3</bdi> מ״ב</small></a>
+        </div>
+      </div>
     </div></section>
     <section class="newsletter wrap" id="newsletter" aria-labelledby="newsletter-title">
       <div class="newsletter-copy">
         <p class="eyebrow"><i></i> רשימת התפוצה</p>
         <h2 id="newsletter-title">מכתבים מהשטח</h2>
         <p class="newsletter-intro">אם תרצו לקרוא עוד סיפורים מהדירות שאני מלווה, אשמח לשלוח לכם אותם במייל.</p>
-        <a class="signup button" href="https://huxhkuh.github.io/israel-portnoy-booklet/#contact-form-shell" target="_blank" rel="noopener"><span class="mail-icon" aria-hidden="true"></span>להצטרפות לרשימת התפוצה <span class="arrow" aria-hidden="true">↗</span></a>
-        <small class="signup-note">הטופס ייפתח בלשונית חדשה באתר החוברת.</small>
+        <div class="subscription-form" data-updates-form data-updates-source="updates" hidden></div>
+        <noscript><p>אפשר לבקש להצטרף לרשימת התפוצה <a href="mailto:ysrael305@gmail.com?subject=הצטרפות%20לרשימת%20התפוצה">במייל לישראל</a>.</p></noscript>
       </div>
       <figure class="gallery" aria-label="גלריית אדריכלות מקומית">
         <div class="photo-frame">

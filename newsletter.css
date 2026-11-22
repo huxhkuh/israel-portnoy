@@ -1,0 +1,19 @@
+.subscription-form {width:100%;min-width:0}
+.subscription-form iframe {display:block;width:100%;height:0;visibility:hidden;border:0}
+.subscription-form iframe.lead-frame-ready {visibility:visible}
+.subscription-form [data-lead-frame-status] {margin:0;padding-block:12px;font-size:17px;line-height:1.5}
+.updates-retry,.updates-later {min-height:44px;border:0;background:none;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:5px}
+.updates-retry {padding:0}
+#updates-dialog {
+  box-sizing:border-box;width:min(510px,calc(100% - 24px));max-height:calc(100dvh - 32px);
+  margin:auto;padding:clamp(24px,4vw,42px);overflow:auto;overscroll-behavior:contain;
+  border:1px solid #83997d;border-block-start:4px solid #c8a45f;border-radius:3px;
+  background:#063f2e;color:#fffdf6;font:400 17px/1.5 var(--sans,BookBody),Arial,sans-serif;
+}
+#updates-dialog::backdrop {background:rgb(5 32 23 / 72%)}
+#updates-dialog h2 {margin:0;padding-inline-end:20px;font:700 clamp(29px,4vw,40px)/1.12 var(--heading,BookDisplay),Arial,sans-serif;letter-spacing:-.035em}
+.updates-invite {margin:10px 0 18px;color:#e1e8da}
+.updates-close {position:absolute;inset-inline-end:6px;inset-block-start:4px;width:40px;height:40px;border:0;background:none;color:inherit;font:27px/1 Arial,sans-serif}
+.updates-close:hover,.updates-later:hover,.updates-retry:hover {color:#f8e9be}
+.updates-later {display:block;margin:8px auto 0;font-size:15px}
+.updates-notice {position:fixed;z-index:12;inset: auto 12px 16px;margin:auto;width:fit-content;max-width:calc(100% - 24px);padding:12px 20px;border:1px solid #a4ab8f;background:#fffdf6;color:#063f2e}
