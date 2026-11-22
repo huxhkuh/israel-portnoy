@@ -18,7 +18,8 @@
     <h2 id="updates-title">מכתבים מהשטח</h2>
     <p class="updates-invite">רוצים לקבל ממני את הסיפור הבא במייל?</p>
     <div class="subscription-form" data-updates-form data-updates-source="exit" hidden></div>
-    <button class="updates-later" type="button" data-updates-close>אולי בפעם אחרת</button>`;
+    <button class="updates-later" type="button" data-updates-close>אולי בפעם אחרת</button>
+    <a class="updates-continue" hidden>להמשיך לקישור שבחרתי ←</a>`;
   const notice = document.createElement('p');
   notice.className = 'updates-notice';
   notice.setAttribute('role', 'status');
@@ -171,10 +172,13 @@
     const active = document.activeElement;
     return Boolean(active && (active.isContentEditable || active.tagName === 'IFRAME' || active.closest?.('input, textarea, select, [contenteditable="true"]')));
   }
-  function openBanner() {
+  function openBanner(destination) {
     if (!dialog || shown || dialog.open || subscribed || document.hidden || editing()) return;
     const openDialog = document.querySelector('dialog[open]');
     if (openDialog && openDialog !== dialog) return;
+    const onward = dialog.querySelector('.updates-continue');
+    onward.hidden = !destination;
+    if (destination) onward.href = destination;
     try { dialog.showModal(); }
     catch { return; }
     rememberShown();
@@ -196,6 +200,15 @@
       if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeBanner();
     });
     addEventListener('mouseout', exitIntent);
+    document.addEventListener('click', event => {
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const link = event.target.closest?.('a[href]');
+      if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+      if (link.origin === location.origin || !['http:', 'https:'].includes(link.protocol)) return;
+      if (shown || subscribed || dialog.open) return;
+      openBanner(link.href);
+      if (dialog.open) event.preventDefault();
+    });
     // On touch screens, a deliberate swipe back to the beginning after reading.
     let touchScroll = null;
     document.addEventListener('touchstart', event => {
@@ -215,4 +228,11 @@
   }
   if (subscribed) displaySubscription();
   else inlineContexts.forEach(context => context.initialize());
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    shown = shown || readSession(shownKey);
+    subscribed = subscribed || readSession(subscribedKey);
+    if (subscribed) displaySubscription();
+    if (shown) closeBanner();
+  });
 })();
