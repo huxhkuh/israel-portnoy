@@ -62,6 +62,9 @@ button,a,input{outline-offset:3px}:focus-visible{outline:2px solid #9b783b}
 }
 @keyframes open-contents {from {transform:translateX(18px);opacity:.65} to {transform:none;opacity:1}}
 
-/* Text controls replace navigation arrows, including on narrow screens. */
+.read-toc-summary{list-style:none;display:flex;align-items:center;gap:10px}
+.read-toc-summary::-webkit-details-marker{display:none}
+.read-toc-summary::after{content:"";width:12px;height:12px;flex:none;background:linear-gradient(currentColor,currentColor) center/100% 2px no-repeat,linear-gradient(currentColor,currentColor) center/2px 100% no-repeat}
+.read-toc-page[open]>.read-toc-summary::after{background-size:100% 2px,2px 0}
 .read-step{width:auto;min-width:44px;padding-inline:9px;white-space:nowrap;font-size:13px}
 @media(max-width:760px){.read-footer{gap:7px;padding-inline:8px}.read-footer .read-step{min-width:42px;padding-inline:6px;font-size:12px}.read-page-form{gap:5px}.read-searchbar .read-step{font-size:12px;min-width:42px;padding-inline:5px}.read-home .read-icon{width:24px;height:24px}}

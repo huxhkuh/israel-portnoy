@@ -19,7 +19,7 @@
     <p class="updates-invite">רוצים לקבל ממני את הסיפור הבא במייל?</p>
     <div class="subscription-form" data-updates-form data-updates-source="exit" hidden></div>
     <button class="updates-later" type="button" data-updates-close>אולי בפעם אחרת</button>
-    <a class="updates-continue" hidden>להמשיך לקישור שבחרתי ←</a>`;
+    <a class="updates-continue" hidden>להמשיך לקישור שבחרתי</a>`;
   const notice = document.createElement('p');
   notice.className = 'updates-notice';
   notice.setAttribute('role', 'status');

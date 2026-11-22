@@ -28,17 +28,14 @@ const photographs = [
 const controls = document.querySelector(".photo-controls");
 const photo = document.querySelector("#gallery-photo");
 const place = document.querySelector("#photo-place");
-const counter = document.querySelector("#photo-index");
 const credit = document.querySelector("#photo-credit");
 const author = document.querySelector("#photo-author");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let displayedPhoto = 0;
 let requestedPhoto = 0;
 
-async function changePhotograph(step) {
-  const count = photographs.length;
-  requestedPhoto = (requestedPhoto + step + count) % count;
-  const index = requestedPhoto;
+async function changePhotograph(index) {
+  requestedPhoto = index;
   if (index === displayedPhoto) return;
 
   const next = photographs[index];
@@ -61,7 +58,7 @@ async function changePhotograph(step) {
     previous.className = "previous-photo";
     previous.alt = "";
     previous.setAttribute("aria-hidden", "true");
-    previous.style.setProperty("--slide-end", step > 0 ? "10px" : "-10px");
+    previous.style.setProperty("--slide-end", index > displayedPhoto ? "10px" : "-10px");
     photo.after(previous);
     previous.addEventListener("animationend", () => previous.remove(), { once: true });
     previous.addEventListener("animationcancel", () => previous.remove(), { once: true });
@@ -70,16 +67,23 @@ async function changePhotograph(step) {
   photo.src = preload.src;
   photo.alt = next.alt;
   place.textContent = next.place;
-  counter.textContent = String(index + 1).padStart(2, "0");
+  photoButtons.forEach((button, position) => button.setAttribute("aria-pressed", String(position === index)));
   credit.href = next.source;
   credit.setAttribute("aria-label", "קרדיט לתצלום של " + next.author);
   author.textContent = next.shortCredit;
 }
 
-controls.hidden = false;
-controls.querySelectorAll("button").forEach((button) => {
-  button.addEventListener("click", () => changePhotograph(Number(button.dataset.step)));
+const photoButtons = photographs.map((item, index) => {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = String(index + 1).padStart(2, "0");
+  button.setAttribute("aria-label", button.textContent + " · " + item.place);
+  button.setAttribute("aria-pressed", String(index === displayedPhoto));
+  button.addEventListener("click", () => changePhotograph(index));
+  return button;
 });
+controls.append(...photoButtons);
+controls.hidden = false;
 
 const nav = document.querySelector(".navigation");
 const menu = document.querySelector(".menu-toggle");
