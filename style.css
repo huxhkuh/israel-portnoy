@@ -25,8 +25,15 @@ a,button,summary {-webkit-tap-highlight-color:transparent}
 h2 {font:700 clamp(44px,4.5vw,76px)/1.06 var(--heading);letter-spacing:-.045em;margin-top:12px}
 h3 {font:700 clamp(25px,2.05vw,36px)/1.12 var(--heading);letter-spacing:-.04em}
 em {font-style:normal}
-.button {display:inline-flex;align-items:center;justify-content:space-between;gap:30px;min-height:48px;padding:9px 20px;background:var(--green);border:1px solid var(--green);color:var(--paper);font:700 16px/1.3 var(--sans)}
-.button:hover {background:#195d44}
+.button {position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:space-between;gap:30px;min-height:48px;padding:9px 20px;background:var(--green);border:1px solid var(--green);color:var(--paper);font:700 16px/1.3 var(--sans)}
+.button-fill {
+  position:absolute;inset:0;display:flex;align-items:inherit;justify-content:inherit;gap:inherit;padding:inherit;
+  pointer-events:none;clip-path:inset(0 0 0 100%);background:var(--cream);color:var(--green);
+}
+.button:is(:focus-visible,:active,.is-pressed) .button-fill {clip-path:inset(0)}
+@media (hover:hover) {
+  .button:hover .button-fill {clip-path:inset(0)}
+}
 .arrow,.text-link span {font:21px/1 Arial,sans-serif}
 .text-link {display:inline-flex;align-items:center;gap:12px;border-bottom:1px solid currentColor;padding-block:4px;font-weight:700}
 .text-link:hover {color:var(--accent)}
@@ -41,8 +48,9 @@ em {font-style:normal}
 .navigation {display:flex;align-items:center;gap:clamp(15px,2.1vw,38px)}
 .navigation a {position:relative;padding:12px 0;font:600 16px/1.4 var(--sans)}
 .navigation a[aria-current]::after,.navigation a:hover::after {content:"";position:absolute;inset:auto 0 4px;height:2px;background:var(--gold)}
-.header .button-small {min-height:38px;gap:17px;padding:5px 12px 5px 5px;background:transparent;border-color:#91a68d;color:var(--paper);font-size:15px}
-.button-small .arrow {display:grid;place-items:center;width:27px;height:27px;background:var(--cream);color:var(--green);font-size:18px}
+.header .button-small {min-height:38px;gap:17px;padding:5px 12px 5px 5px;background:var(--cream);border-color:var(--cream);color:var(--green);font-size:15px}
+.button-small .arrow {display:grid;place-items:center;width:27px;height:27px;background:var(--green);color:var(--cream);font-size:18px}
+.header .button-fill {background:var(--gold)}
 .menu-toggle {display:none}
 
 /* Cover portrait */
@@ -56,7 +64,7 @@ em {font-style:normal}
 .actions {display:flex;align-items:center;gap:26px;margin-top:25px}
 .hero .button {gap:24px;min-height:49px;padding:6px 16px 6px 7px;font-size:17px}
 .hero .button .arrow {display:grid;place-items:center;width:32px;height:32px;background:#f8e9be;color:var(--green);font-size:21px}
-.hero .button:hover .arrow {background:var(--gold)}
+.hero .button .button-fill .arrow {background:var(--green);color:var(--cream)}
 .hero .text-link {color:var(--green);min-height:42px;gap:11px;border-color:#7c8f76;font-size:16px}
 
 @media (min-width:761px) {
@@ -220,4 +228,51 @@ footer a:hover,.contact-links a:hover {color:var(--gold)}
 @media (prefers-reduced-motion:reduce) {
   html {scroll-behavior:auto}
   *,*::before,*::after {transition:none!important;animation:none!important}
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  :root {--ease-out:cubic-bezier(.2,.74,.25,1)}
+  .button-fill {transition:clip-path 350ms var(--ease-out)}
+  .button .button-fill .arrow {transform:translate(4px,-2px);transition:transform 380ms var(--ease-out)}
+  .button:is(:active,:focus-visible,.is-pressed) .button-fill .arrow {transform:none}
+  .button,.photo-controls button,.book-downloads a {transition:transform 160ms var(--ease-out),background-color 180ms}
+  .button:is(:active,.is-pressed),.photo-controls button:active,.book-downloads a:active {transform:scale(.965);transition-duration:70ms}
+  .button:is(:active,.is-pressed) .button-fill {transition-duration:80ms}
+  .hero h1,.hero .intro,.hero .actions {animation:arrive 560ms var(--ease-out) backwards}
+  .hero .intro {animation-delay:75ms}
+  .hero .actions {animation-delay:140ms}
+  .service.in-view .service-art img,.office-portrait.in-view {animation:arrive 630ms var(--ease-out) backwards}
+  .book-art.in-view .book-page {animation:open-book 780ms var(--ease-out) backwards}
+  .menu-toggle span {transition:transform 200ms var(--ease-out)}
+  .previous-photo {pointer-events:none;animation:change-photo 400ms ease-out forwards}
+  .text-link span,.contact-links a>span:last-child {transition:transform 240ms var(--ease-out),background-color 220ms}
+  .text-link:focus-visible span {transform:translateY(3px)}
+  .contact-links a:focus-visible>span:last-child {transform:translate(-3px,2px)}
+  @media (min-width:761px) {
+    .service:nth-child(2) {--art-delay:70ms}
+    .service:nth-child(3) {--art-delay:140ms}
+    .service.in-view .service-art img {animation-delay:var(--art-delay,0ms)}
+    .navigation a::after {content:"";position:absolute;inset:auto 0 4px;height:2px;background:var(--gold);transform-origin:right;transform:scaleX(0);transition:transform 230ms var(--ease-out)}
+    .navigation a:is([aria-current],:hover,:focus-visible)::after {transform:scaleX(1)}
+  }
+  @media (hover:hover) {
+    .button:hover .button-fill .arrow {transform:none}
+    .text-link:hover span {transform:translateY(3px)}
+    .contact-links a:hover>span:last-child {transform:translate(-3px,2px)}
+  }
+}
+@keyframes arrive {
+  from {opacity:.35;translate:0 16px}
+  to {opacity:1;translate:0 0}
+}
+@keyframes open-book {
+  from {transform:translate(8%,-1%) rotate(1deg)}
+  to {transform:translate(-47%,2%) rotate(-11deg)}
+}
+@keyframes change-photo {
+  from {opacity:1;transform:scale(1)}
+  to {opacity:0;transform:translateX(var(--slide-end)) scale(1.04)}
+}
+@media (prefers-reduced-motion:reduce) {
+  .previous-photo {display:none}
 }

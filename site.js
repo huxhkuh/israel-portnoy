@@ -31,22 +31,54 @@ const place = document.querySelector("#photo-place");
 const counter = document.querySelector("#photo-index");
 const credit = document.querySelector("#photo-credit");
 const author = document.querySelector("#photo-author");
-let currentPhoto = 0;
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let displayedPhoto = 0;
+let requestedPhoto = 0;
+
+async function changePhotograph(step) {
+  const count = photographs.length;
+  requestedPhoto = (requestedPhoto + step + count) % count;
+  const index = requestedPhoto;
+  if (index === displayedPhoto) return;
+
+  const next = photographs[index];
+  const preload = new Image();
+  preload.src = "assets/" + next.file;
+  try {
+    await preload.decode();
+  } catch {
+    if (requestedPhoto === index) requestedPhoto = displayedPhoto;
+    return;
+  }
+  if (index !== requestedPhoto || index === displayedPhoto) return;
+
+  const frame = photo.parentElement;
+  frame.querySelector(".previous-photo")?.remove();
+  if (!reducedMotion.matches && photo.complete && photo.naturalWidth) {
+    const previous = photo.cloneNode(false);
+    previous.removeAttribute("id");
+    previous.removeAttribute("loading");
+    previous.className = "previous-photo";
+    previous.alt = "";
+    previous.setAttribute("aria-hidden", "true");
+    previous.style.setProperty("--slide-end", step > 0 ? "10px" : "-10px");
+    photo.after(previous);
+    previous.addEventListener("animationend", () => previous.remove(), { once: true });
+    previous.addEventListener("animationcancel", () => previous.remove(), { once: true });
+  }
+  displayedPhoto = index;
+  photo.src = preload.src;
+  photo.alt = next.alt;
+  place.textContent = next.place;
+  counter.textContent = String(index + 1).padStart(2, "0");
+  credit.href = next.source;
+  credit.setAttribute("aria-label", "קרדיט לתצלום של " + next.author);
+  author.textContent = next.shortCredit;
+}
 
 controls.hidden = false;
 controls.querySelectorAll("button").forEach((button) => {
-  button.addEventListener("click", () => {
-    const count = photographs.length;
-    currentPhoto = (currentPhoto + Number(button.dataset.step) + count) % count;
-    const next = photographs[currentPhoto];
-    photo.src = "assets/" + next.file;
-    photo.alt = next.alt;
-    place.textContent = next.place;
-    counter.textContent = String(currentPhoto + 1).padStart(2, "0");
-    credit.href = next.source;
-    credit.setAttribute("aria-label", "קרדיט לתצלום של " + next.author);
-    author.textContent = next.shortCredit;
-  });
+  button.addEventListener("click", () => changePhotograph(Number(button.dataset.step)));
 });
 
 const nav = document.querySelector(".navigation");
@@ -91,3 +123,31 @@ window.addEventListener("scroll", () => {
   }
 }, { passive: true });
 updateNavigation();
+
+// Two aligned faces keep the lettering legible on both sides of the moving edge.
+document.querySelectorAll(".button").forEach(button => {
+  const face = document.createElement("span");
+  face.className = "button-fill";
+  face.setAttribute("aria-hidden", "true");
+  face.append(...Array.from(button.childNodes, node => node.cloneNode(true)));
+  button.append(face);
+  button.addEventListener("pointerdown", event => {
+    if (event.isPrimary && event.pointerType !== "mouse" && event.button === 0) {
+      button.classList.add("is-pressed");
+    }
+  });
+  for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
+    button.addEventListener(type, () => button.classList.remove("is-pressed"));
+  }
+});
+
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add("in-view");
+      observer.unobserve(entry.target);
+    }
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".service, .office-portrait, .book-art").forEach(element => observer.observe(element));
+}

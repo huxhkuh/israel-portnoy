@@ -18,3 +18,11 @@
 .updates-later {display:block;margin:8px auto 0;font-size:15px}
 .updates-continue {display:block;padding:8px;text-align:center;color:#f8e9be;text-decoration:underline;text-underline-offset:4px}
 .updates-notice {position:fixed;z-index:12;inset: auto 12px 16px;margin:auto;width:fit-content;max-width:calc(100% - 24px);padding:12px 20px;border:1px solid #a4ab8f;background:#fffdf6;color:#063f2e}
+@media (prefers-reduced-motion:no-preference) {
+  #updates-dialog[open] {animation:invite-enter 240ms cubic-bezier(.2,.74,.25,1)}
+  #updates-dialog[open]::backdrop {animation:invite-backdrop 200ms ease-out}
+  .updates-close {transition:transform 180ms ease-out}
+  .updates-close:active {transform:scale(.87)}
+}
+@keyframes invite-enter {from {opacity:.2;transform:translateY(12px)} to {opacity:1;transform:none}}
+@keyframes invite-backdrop {from {opacity:0} to {opacity:1}}

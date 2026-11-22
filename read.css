@@ -48,6 +48,20 @@ button,a,input{outline-offset:3px}:focus-visible{outline:2px solid #9b783b}
 @media(max-width:360px){.read-header{gap:8px;padding-inline:9px}.read-header h1{font-size:20px}.read-toolbar{padding-inline:7px;gap:3px}.read-mode{font-size:11px;padding-inline:6px;gap:4px}.read-mode .read-icon{width:16px;height:16px}.read-toolbar .read-square,.contents-toggle{width:34px;padding-inline:5px}.read-text{padding-inline:21px}.read-cover{gap:18px}.read-cover h2{font-size:28px}.read-searchbar{gap:1px;padding-inline:7px}.read-searchbar .read-square{width:29px;padding:5px}.read-searchbar input{padding-inline:7px}#read-search-count{min-width:38px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
+@media (prefers-reduced-motion:no-preference) {
+  :is(.read-button,.read-mode,.read-chapter,.read-download) {transition:background-color 180ms ease-out,transform 140ms ease-out}
+  :is(.read-button,.read-mode):enabled:active,.read-download:active {transform:scale(.95)}
+  .read-download .read-icon {transition:transform 220ms ease-out}
+  .read-download:focus-visible .read-icon {transform:translateY(3px)}
+  @media (hover:hover) {
+    .read-download:hover .read-icon {transform:translateY(3px)}
+  }
+  @media (max-width:760px) {
+    .contents-open .read-contents {animation:open-contents 230ms cubic-bezier(.2,.74,.25,1)}
+  }
+}
+@keyframes open-contents {from {transform:translateX(18px);opacity:.65} to {transform:none;opacity:1}}
+
 /* Text controls replace navigation arrows, including on narrow screens. */
 .read-step{width:auto;min-width:44px;padding-inline:9px;white-space:nowrap;font-size:13px}
 @media(max-width:760px){.read-footer{gap:7px;padding-inline:8px}.read-footer .read-step{min-width:42px;padding-inline:6px;font-size:12px}.read-page-form{gap:5px}.read-searchbar .read-step{font-size:12px;min-width:42px;padding-inline:5px}.read-home .read-icon{width:24px;height:24px}}
