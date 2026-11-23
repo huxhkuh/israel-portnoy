@@ -5,6 +5,9 @@
   if (remainingInk) CSS.highlights.set("remaining-ink", remainingInk);
 
   const visible = new Map();
+  const flowSelector = ".intro, .service-text, .approach-text, .book-copy, .newsletter-copy, .read-text-content, .policy, dialog";
+  const copySelector = "p, .signature";
+  const ignored = '[role="status"], [aria-live], [data-lead-frame-status], noscript';
   let frame = 0;
 
   // Keep the original text and inline links intact. Only the unfilled words change colour.
@@ -26,28 +29,49 @@
     return { height, bottom, scroll: scroller.scrollTop, end: scroller.scrollHeight - height };
   }
 
+  function paragraphs(block) {
+    const copy = block.matches(copySelector) ? [block] : block.querySelectorAll(copySelector);
+    return Array.from(copy).filter(el => !el.closest(ignored)).map(el => ({
+      el, words: wordStarts(el), range: document.createRange(), filled: -1
+    }));
+  }
+
+  function clearRanges(state) {
+    for (const part of state.parts || []) remainingInk.delete(part.range);
+    state.parts = null;
+  }
+
   function paint() {
     frame = 0;
     const viewports = new Map();
     for (const [block, state] of visible) {
       if (!viewports.has(state.root)) viewports.set(state.root, viewport(state.root));
       const view = viewports.get(state.root);
-      const rect = block.getBoundingClientRect();
-      const distance = Math.min(view.scroll, view.bottom - view.height * .08 - rect.top);
+      if (!state.parts) state.parts = paragraphs(block);
+      const parts = state.parts.filter(part => part.el.getClientRects().length && part.words.length);
+      if (!parts.length) continue;
+      const top = parts[0].el.getBoundingClientRect().top;
+      const bottom = parts[parts.length - 1].el.getBoundingClientRect().bottom;
+      const distance = Math.min(view.scroll, view.bottom - view.height * .08 - top);
       const progress = view.scroll >= view.end - 1 ? 1 :
-        Math.max(0, Math.min(1, distance / (view.height * .30 + rect.height)));
+        Math.max(0, Math.min(1, distance / (view.height * .30 + bottom - top)));
 
-      if (!state.words) state.words = wordStarts(block);
-      const index = Math.round(progress * state.words.length);
-      if (index === state.index) continue;
-      state.index = index;
-      if (index === state.words.length) {
-        remainingInk.delete(state.range);
-      } else {
-        const { node, offset } = state.words[index];
-        state.range.selectNodeContents(block);
-        state.range.setStart(node, offset);
-        remainingInk.add(state.range);
+      // One scroll position for the whole card. Spend it on paragraphs in reading order.
+      const total = parts.reduce((sum, part) => sum + part.words.length, 0);
+      let remaining = Math.round(progress * total);
+      for (const part of parts) {
+        const filled = Math.min(remaining, part.words.length);
+        remaining -= filled;
+        if (filled === part.filled) continue;
+        part.filled = filled;
+        if (filled === part.words.length) {
+          remainingInk.delete(part.range);
+        } else {
+          const { node, offset } = part.words[filled];
+          part.range.selectNodeContents(part.el);
+          part.range.setStart(node, offset);
+          remainingInk.add(part.range);
+        }
       }
     }
   }
@@ -64,10 +88,10 @@
       } else if (isIntersecting && remainingInk && !visible.has(target)) {
         visible.set(target, {
           root: target.closest(".read-scroll, .read-contents, dialog"),
-          words: wordStarts(target), range: document.createRange(), index: -1
+          parts: null
         });
       } else if (!isIntersecting && visible.has(target)) {
-        remainingInk.delete(visible.get(target).range);
+        clearRanges(visible.get(target));
         visible.delete(target);
       }
     }
@@ -78,9 +102,9 @@
     if (!motion.matches) return;
     const selector = remainingInk ? "h1, h2, h3, p, .signature" : "h1, h2, h3";
     for (const block of root.querySelectorAll(selector)) {
-      if (!block.closest('[role="status"], [aria-live], [data-lead-frame-status], noscript')) {
-        observer.observe(block);
-      }
+      if (block.closest(ignored)) continue;
+      const flow = block.matches(copySelector) && block.closest(flowSelector);
+      observer.observe(flow || block);
     }
   }
 
@@ -100,11 +124,8 @@
       // The reader inserts its pages, then replaces individual paragraphs during search.
       for (const { target } of records) {
         if (target === reader) observeCopy(reader);
-        const state = visible.get(target.closest("p"));
-        if (state) {
-          state.words = null;
-          state.index = -1;
-        }
+        const state = visible.get(target.closest(flowSelector) || target.closest(copySelector));
+        if (state) clearRanges(state);
       }
       schedulePaint();
     });
