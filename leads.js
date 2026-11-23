@@ -56,6 +56,9 @@
 
   function embed(shell) {
     shell.innerHTML = `
+      <p class="signup-privacy">ההרשמה לבחירתכם. ישראל פורטנוי ישתמש בדוא״ל שתמסרו כדי לשלוח לכם תוכן ועדכונים. השם לבחירתכם. הפרטים ותיעוד ההסכמה נשמרים אצל Google לצורך ניהול הרשימה. אפשר לקרוא את החוברת גם בלי להירשם.
+        <a href="privacy.html" target="_blank" rel="noopener">מדיניות פרטיות וזכויות עיון, תיקון והסרה (בלשונית חדשה)</a>
+      </p>
       <p data-lead-frame-status role="status">טוענים את טופס ההרשמה…</p>
       <iframe title="הצטרפות לרשימת התפוצה של ישראל פורטנוי" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="strict-origin-when-cross-origin"></iframe>
       <button type="button" class="updates-retry" hidden>לטעון את הטופס מחדש</button>`;

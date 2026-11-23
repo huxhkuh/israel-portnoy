@@ -1,4 +1,8 @@
 .subscription-form {width:100%;min-width:0}
+.signup-privacy {margin:0 0 16px;color:#e1e8da;font-size:15px;line-height:1.5}
+.signup-privacy a {color:#f8e9be;text-decoration:underline;text-underline-offset:3px}
+.read-save-note a {text-decoration:underline;text-underline-offset:3px}
+.updates-subscribed .signup-privacy {display:none}
 .subscription-form iframe {display:block;width:100%;height:0;visibility:hidden;border:0}
 .subscription-form iframe.lead-frame-ready {visibility:visible}
 .subscription-form [data-lead-frame-status] {margin:0;padding-block:12px;font-size:17px;line-height:1.5}

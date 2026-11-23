@@ -1,0 +1,7 @@
+.policy {width:min(90%,70ch);margin-inline:auto;padding-block:clamp(40px,6vw,84px);font-size:clamp(18px,1.45vw,21px);line-height:1.65}
+.policy h1 {margin:0;font:700 clamp(46px,6vw,78px)/1.1 var(--heading);color:var(--green)}
+.policy h2 {margin:1.7em 0 .4em;font:700 clamp(24px,3vw,34px)/1.22 var(--heading);letter-spacing:-.025em}
+.policy p+p {margin-top:.7em}
+.policy .policy-date {margin:.45em 0 1.5em;color:var(--muted);font-size:.85em}
+.policy a,.policy-home {text-decoration:underline;text-underline-offset:.16em}
+.policy a {color:var(--green);overflow-wrap:anywhere}
