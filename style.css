@@ -107,7 +107,7 @@ em {font-style:normal}
 .approach-text p {font-size:clamp(18px,1.5vw,22px);line-height:1.55;color:var(--muted)}
 .approach-text p:first-child {font-size:clamp(21px,1.75vw,27px);font-weight:600;line-height:1.42;color:var(--green)}
 .approach-text p+p {margin-top:14px;font-size:clamp(17px,1.35vw,21px)}
-.office-portrait {grid-column:1;grid-row:1 / 3;justify-self:end;width:min(100%,425px);height:auto;aspect-ratio:1/1.09;object-fit:cover;object-position:50% 23%;box-shadow:7px 7px 0 var(--gold)}
+.personal-portrait {grid-column:1;grid-row:1 / 3;justify-self:end;width:min(100%,425px);height:auto;aspect-ratio:1/1.09;object-fit:cover;object-position:50% 23%;box-shadow:7px 7px 0 var(--gold)}
 .signature {display:flex;align-items:center;gap:12px;margin-top:16px;font:600 24px/1.3 var(--sans)}
 .signature::before {content:"";height:2px;width:40px;background:var(--gold)}
 
@@ -138,19 +138,7 @@ em {font-style:normal}
 .newsletter-copy .newsletter-intro {color:#e1e8da}
 .newsletter-copy noscript a {text-decoration:underline}
 .newsletter-copy h2 {font-size:clamp(40px,4.15vw,70px)}
-.gallery {display:flex;flex-direction:column;min-width:0;background:var(--green)}
-.photo-frame {position:relative;flex:1;min-height:200px;aspect-ratio:1.8;overflow:hidden}
-.photo-frame>img {position:absolute;inset:0}
-.photo-frame img {width:100%;height:100%;display:block;object-fit:cover;object-position:50% 48%;filter:saturate(.78) brightness(1.04)}
-.photo-info {display:grid;gap:3px}
-.photo-label {justify-self:start;color:#d5decf;font:13px/1.2 var(--sans)}
-.photo-label:hover {text-decoration:underline}
-figcaption {display:flex;align-items:center;gap:12px;color:var(--paper);padding:12px 16px;font:600 15px/1.2 var(--sans)}
-.pin {color:var(--cream)}
-.photo-controls {display:flex;flex-shrink:0;gap:2px;margin-inline-start:auto}
-.photo-controls button {min-width:40px;height:44px;padding:0 5px;border:0;border-bottom:2px solid #678775;background:transparent;color:var(--paper);font:600 15px var(--sans);font-variant-numeric:tabular-nums}
-.photo-controls button[aria-pressed="true"] {border-bottom-color:var(--gold);background:#184e3c;color:var(--cream);font-weight:700}
-.photo-controls button:hover {background:var(--cream);color:var(--green)}
+.newsletter-house {display:block;width:100%;height:100%;min-width:0;min-height:0;aspect-ratio:3/2;object-fit:cover;object-position:center}
 
 /* Contact and colophon */
 .contact {display:grid;width:100%;grid-template-columns:1.15fr .85fr;gap:8%;align-items:center;padding:clamp(56px,6vw,97px) var(--edge);background:var(--green);color:var(--paper)}
@@ -163,17 +151,9 @@ figcaption {display:flex;align-items:center;gap:12px;color:var(--paper);padding:
 .contact-links [dir="ltr"] {justify-self:start}
 footer {background:var(--green);color:var(--paper);border-top:1px solid #44725d;font-size:14px}
 .footer-row {display:flex;align-items:center;justify-content:space-between;gap:18px;padding-block:22px}
-.credits {position:relative}
-.credits summary {cursor:pointer;list-style:none;display:flex;align-items:center;gap:7px}
-.credits summary::-webkit-details-marker {display:none}
-.credits summary::after {content:"";width:10px;height:10px;background:linear-gradient(currentColor,currentColor) center/100% 1px no-repeat,linear-gradient(currentColor,currentColor) center/1px 100% no-repeat}
-.credits[open] summary::after {background-size:100% 1px,1px 0}
 .channel-icon {width:23px;height:23px;color:var(--cream);--icon-cutout:var(--green)}
 .contact-links a:is(:hover,:focus-visible) [dir="ltr"],.footer-row>a:is(:hover,:focus-visible) {text-decoration:underline;text-underline-offset:4px}
-.credits>div {position:absolute;bottom:155%;padding:14px 20px;background:var(--paper);color:var(--green);border:1px solid var(--line);white-space:nowrap}
-.credits a {display:block;padding:4px 0}
 footer a:hover,.contact-links a:hover {color:var(--gold)}
-.credits a:hover {color:var(--accent)}
 
 @media (min-width:761px) and (max-width:1000px) {
   .header-row {gap:10px}
@@ -218,10 +198,10 @@ footer a:hover,.contact-links a:hover {color:var(--gold)}
   .service-text {max-width:none;font-size:18px}
   .service-lead {font-size:clamp(22px,4vw,27px)}
   .approach,.contact {width:100%;grid-template-columns:1fr;gap:22px;padding:48px var(--edge)}
-  .approach {grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:23px 16px}
+  .approach {grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:23px 16px}
   .approach>div:first-child {grid-column:1;grid-row:1;align-self:center}
   .approach h2 {font-size:clamp(29px,6.8vw,44px);line-height:1.09}
-  .office-portrait {grid-column:2;grid-row:1;justify-self:end;width:min(100%,200px);height:auto;aspect-ratio:4/5;box-shadow:4px 4px 0 var(--gold)}
+  .personal-portrait {grid-column:2;grid-row:1;justify-self:end;width:min(100%,200px);height:auto;aspect-ratio:4/5;box-shadow:4px 4px 0 var(--gold)}
   .approach-text {grid-column:1 / -1;grid-row:2;max-width:46ch}
   .approach-text p:first-child {font-size:21px}
   .approach-text p,.contact p {font-size:17px}
@@ -232,8 +212,7 @@ footer a:hover,.contact-links a:hover {color:var(--gold)}
   .book-copy>p,.newsletter-intro {font-size:17px}
   .newsletter {padding:0;gap:0}
   .newsletter-copy h2 {font-size:clamp(34px,9vw,52px)}
-  .photo-controls button {min-width:31px}
-  figcaption {padding:8px 10px;gap:8px;font-size:13px}
+  .newsletter-house {height:auto}
   .footer-row {gap:8px;font-size:12px}
 }
 @media (prefers-reduced-motion:reduce) {
@@ -244,17 +223,16 @@ footer a:hover,.contact-links a:hover {color:var(--gold)}
 @media (prefers-reduced-motion:no-preference) {
   :root {--ease-out:cubic-bezier(.2,.74,.25,1)}
   .button-fill {transition:clip-path 350ms var(--ease-out)}
-  .button,.photo-controls button,.book-downloads a {transition:transform 160ms var(--ease-out),background-color 180ms}
-  .button:is(:active,.is-pressed),.photo-controls button:active,.book-downloads a:active {transform:scale(.965);transition-duration:70ms}
+  .button,.book-downloads a {transition:transform 160ms var(--ease-out),background-color 180ms}
+  .button:is(:active,.is-pressed),.book-downloads a:active {transform:scale(.965);transition-duration:70ms}
   .button:is(:active,.is-pressed) .button-fill {transition-duration:80ms}
   .hero h1,.hero .intro,.hero .actions {animation:arrive 560ms var(--ease-out) backwards}
   .hero .intro {animation-delay:75ms}
   .hero .actions {animation-delay:140ms}
-  .service.in-view .service-art img,.office-portrait.in-view {animation:arrive 630ms var(--ease-out) backwards}
+  .service.in-view .service-art img,.personal-portrait.in-view {animation:arrive 630ms var(--ease-out) backwards}
   .book-art.in-view .book-page {animation:open-book 780ms var(--ease-out) backwards}
   .menu-toggle span {transition:transform 200ms var(--ease-out)}
   .text-link::after {transition:transform 240ms var(--ease-out)}
-  .previous-photo {pointer-events:none;animation:change-photo 400ms ease-out forwards}
   @media (min-width:761px) {
     .navigation a::after {content:"";position:absolute;inset:auto 0 4px;height:2px;background:var(--gold);transform-origin:right;transform:scaleX(0);transition:transform 230ms var(--ease-out)}
     .navigation a:is([aria-current],:hover,:focus-visible)::after {transform:scaleX(1)}
@@ -267,11 +245,4 @@ footer a:hover,.contact-links a:hover {color:var(--gold)}
 @keyframes open-book {
   from {transform:translate(8%,-1%) rotate(1deg)}
   to {transform:translate(-47%,2%) rotate(-11deg)}
-}
-@keyframes change-photo {
-  from {opacity:1;transform:scale(1)}
-  to {opacity:0;transform:translateX(var(--slide-end)) scale(1.04)}
-}
-@media (prefers-reduced-motion:reduce) {
-  .previous-photo {display:none}
 }

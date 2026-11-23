@@ -1,90 +1,3 @@
-const photographs = [
-  {
-    file: "residence.webp",
-    author: "Tomasz Anusiewicz",
-    shortCredit: "T. Anusiewicz",
-    source: "https://unsplash.com/photos/k0AmGFCxqbc",
-    place: "בית מגורים, תל אביב",
-    alt: "חזית בהירה של בית מגורים תל אביבי בין עצים, עם מרפסות שקועות",
-  },
-  {
-    file: "balconies.webp",
-    author: "Noam Cohen",
-    shortCredit: "N. Cohen",
-    source: "https://unsplash.com/photos/MKQj4ShPWS4",
-    place: "קצב המרפסות, תל אביב",
-    alt: "שורות של מרפסות בחזית מדורגת, באור ערב בתל אביב",
-  },
-  {
-    file: "facade.webp",
-    author: "Dan Gold",
-    shortCredit: "D. Gold",
-    source: "https://unsplash.com/photos/NZgSC4jHVaI",
-    place: "פרטי חזית, מחוז תל אביב",
-    alt: "שורות חלונות בחזית בטון בהירה על רקע שמיים כחולים",
-  },
-];
-
-const controls = document.querySelector(".photo-controls");
-const photo = document.querySelector("#gallery-photo");
-const place = document.querySelector("#photo-place");
-const credit = document.querySelector("#photo-credit");
-const author = document.querySelector("#photo-author");
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-let displayedPhoto = 0;
-let requestedPhoto = 0;
-
-async function changePhotograph(index) {
-  requestedPhoto = index;
-  if (index === displayedPhoto) return;
-
-  const next = photographs[index];
-  const preload = new Image();
-  preload.src = "assets/" + next.file;
-  try {
-    await preload.decode();
-  } catch {
-    if (requestedPhoto === index) requestedPhoto = displayedPhoto;
-    return;
-  }
-  if (index !== requestedPhoto || index === displayedPhoto) return;
-
-  const frame = photo.parentElement;
-  frame.querySelector(".previous-photo")?.remove();
-  if (!reducedMotion.matches && photo.complete && photo.naturalWidth) {
-    const previous = photo.cloneNode(false);
-    previous.removeAttribute("id");
-    previous.removeAttribute("loading");
-    previous.className = "previous-photo";
-    previous.alt = "";
-    previous.setAttribute("aria-hidden", "true");
-    previous.style.setProperty("--slide-end", index > displayedPhoto ? "10px" : "-10px");
-    photo.after(previous);
-    previous.addEventListener("animationend", () => previous.remove(), { once: true });
-    previous.addEventListener("animationcancel", () => previous.remove(), { once: true });
-  }
-  displayedPhoto = index;
-  photo.src = preload.src;
-  photo.alt = next.alt;
-  place.textContent = next.place;
-  photoButtons.forEach((button, position) => button.setAttribute("aria-pressed", String(position === index)));
-  credit.href = next.source;
-  credit.setAttribute("aria-label", "קרדיט לתצלום של " + next.author);
-  author.textContent = next.shortCredit;
-}
-
-const photoButtons = photographs.map((item, index) => {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = String(index + 1).padStart(2, "0");
-  button.setAttribute("aria-label", button.textContent + " · " + item.place);
-  button.setAttribute("aria-pressed", String(index === displayedPhoto));
-  button.addEventListener("click", () => changePhotograph(index));
-  return button;
-});
-controls.append(...photoButtons);
-controls.hidden = false;
-
 const nav = document.querySelector(".navigation");
 const menu = document.querySelector(".menu-toggle");
 
@@ -153,5 +66,5 @@ if ("IntersectionObserver" in window) {
       observer.unobserve(entry.target);
     }
   }, { threshold: 0.12 });
-  document.querySelectorAll(".service, .office-portrait, .book-art").forEach(element => observer.observe(element));
+  document.querySelectorAll(".service, .personal-portrait, .book-art").forEach(element => observer.observe(element));
 }
