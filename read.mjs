@@ -282,6 +282,7 @@ async function setMode(nextMode, page = currentPage, retry = false) {
       ui.scale.textContent = `${Math.round(runtime.viewer.currentScale * 100)}%`;
     }
     updateZoomButtons();
+    checkReadingEnd();
   } catch (error) { if (request === modeRequest) errorState(error); }
 }
 function goToPage(number) {
@@ -305,6 +306,16 @@ function updateTextPage() {
     else break;
   }
   if (selected !== currentPage) setPageState(selected);
+}
+function checkReadingEnd() {
+  if (!ui.status.hidden) return;
+  const container = mode === 'text' ? ui.textContainer : ui.pdfContainer;
+  if (container.scrollTop > 0 && container.scrollHeight - container.clientHeight - container.scrollTop <= 4) {
+    document.dispatchEvent(new Event('booklet-reading-end'));
+  }
+}
+for (const container of [ui.textContainer, ui.pdfContainer]) {
+  container.addEventListener('scroll', checkReadingEnd, { passive: true });
 }
 ui.textContainer.addEventListener('scroll', () => {
   if (!scrollScheduled) { scrollScheduled = true; requestAnimationFrame(updateTextPage); }

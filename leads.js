@@ -2,32 +2,24 @@
 
 (() => {
   const config = window.ISRAEL_LEADS_CONFIG;
-  let endpoint;
-  try {
-    endpoint = new URL(config?.webAppUrl);
-    if (endpoint.origin !== 'https://script.google.com' || !/^\/macros\/s\/[A-Za-z0-9_-]{20,}\/exec$/.test(endpoint.pathname) || endpoint.username || endpoint.password || endpoint.hash) throw new Error('Invalid deployment');
-  } catch {
-    return;
+  function formEndpoint() {
+    try {
+      const url = new URL(config?.webAppUrl);
+      if (url.origin === 'https://script.google.com' && /^\/macros\/s\/[A-Za-z0-9_-]{20,}\/exec$/.test(url.pathname) && !url.username && !url.password && !url.hash) return url;
+    } catch { /* The booklet offer can still work without the subscription service. */ }
+    return null;
   }
-
-  const dialogElement = document.createElement('dialog');
-  dialogElement.id = 'updates-dialog';
-  dialogElement.setAttribute('aria-labelledby', 'updates-title');
-  dialogElement.innerHTML = `
-    <button class="updates-close" type="button" data-updates-close aria-label="סגירה" autofocus>×</button>
-    <h2 id="updates-title">מכתבים מהשטח</h2>
-    <p class="updates-invite">רוצים לקבל ממני את הסיפור הבא במייל?</p>
-    <div class="subscription-form" data-updates-form data-updates-source="exit" hidden></div>
-    <button class="updates-later" type="button" data-updates-close>אולי בפעם אחרת</button>
-    <a class="updates-continue" hidden>להמשיך לקישור שבחרתי</a>`;
+  const endpoint = formEndpoint();
+  const booklet = document.querySelector('#booklet-dialog');
+  const newsletter = document.querySelector('#updates-dialog');
+  const dialog = booklet || newsletter;
   const notice = document.createElement('p');
   notice.className = 'updates-notice';
   notice.setAttribute('role', 'status');
   notice.tabIndex = -1;
   notice.hidden = true;
-  document.body.append(dialogElement, notice);
-  const dialog = typeof dialogElement?.showModal === 'function' ? dialogElement : null;
-  const shownKey = 'israel-portnoy:updates-shown:v1';
+  document.body.append(notice);
+  const shownKey = booklet ? 'israel-portnoy:booklet-offered:v1' : 'israel-portnoy:reader-invite:v1';
   const subscribedKey = 'israel-updates:subscribed:v1';
   const successMessage = 'נרשמתם לעדכונים מישראל. שמחים שתישארו בקשר.';
   let shown = readSession(shownKey);
@@ -70,11 +62,11 @@
     const frame = shell.querySelector('iframe');
     const status = shell.querySelector('[data-lead-frame-status]');
     const retry = shell.querySelector('.updates-retry');
-    const popup = shell.closest('#updates-dialog') === dialogElement;
+    const popup = Boolean(shell.closest('#updates-dialog'));
     const url = new URL(endpoint.href);
     url.search = '';
     url.searchParams.set('mode', 'updates');
-    url.searchParams.set('source', popup ? 'exit' : 'updates');
+    url.searchParams.set('source', 'updates');
     url.searchParams.set('embed', '1');
     const context = { shell, frame, status, retry, popup, sender: null, nonce: null, loaded: false, initialized: false, failed: false, timer: null };
     context.initialize = () => {
@@ -109,7 +101,7 @@
     return context;
   }
 
-  const contexts = [...document.querySelectorAll('[data-updates-form]')].map(embed);
+  const contexts = endpoint ? [...document.querySelectorAll('[data-updates-form]')].map(embed) : [];
   const popupContexts = contexts.filter(context => context.popup);
   const inlineContexts = contexts.filter(context => !context.popup);
 
@@ -127,10 +119,9 @@
   }
   function completeSubscription() {
     subscribed = true;
-    rememberShown();
     writeSession(subscribedKey);
     displaySubscription();
-    if (dialog?.open) dialog.close();
+    if (newsletter?.open) newsletter.close();
     if (notice) {
       notice.textContent = successMessage;
       notice.hidden = false;
@@ -173,16 +164,19 @@
     return Boolean(active && (active.isContentEditable || active.tagName === 'IFRAME' || active.closest?.('input, textarea, select, [contenteditable="true"]')));
   }
   function openBanner(destination) {
-    if (!dialog || shown || dialog.open || subscribed || document.hidden || editing()) return;
+    if (!dialog?.showModal || shown || dialog.open || document.hidden) return;
+    if (newsletter && (subscribed || !endpoint)) return;
+    if (booklet && editing()) return;
     const openDialog = document.querySelector('dialog[open]');
     if (openDialog && openDialog !== dialog) return;
-    const onward = dialog.querySelector('.updates-continue');
-    onward.hidden = !destination;
-    if (destination) onward.href = destination;
+    if (booklet) {
+      const onward = booklet.querySelector('.updates-continue');
+      onward.hidden = !destination;
+      if (destination) onward.href = destination;
+    }
     try { dialog.showModal(); }
     catch { return; }
     rememberShown();
-    popupContexts.forEach(context => context.initialize());
   }
   function closeBanner() { if (dialog?.open) dialog.close(); }
   function exitIntent(event) {
@@ -191,21 +185,37 @@
   }
 
   if (dialog) {
-    dialog.querySelectorAll('[data-updates-close]').forEach(button => button.addEventListener('click', closeBanner));
-    dialog.addEventListener('cancel', rememberShown);
-    dialog.addEventListener('close', rememberShown);
     dialog.addEventListener('click', event => {
       if (event.target !== dialog) return;
       const bounds = dialog.getBoundingClientRect();
       if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeBanner();
     });
+  }
+  if (newsletter) {
+    document.addEventListener('booklet-reading-end', () => openBanner());
+    const join = newsletter.querySelector('.updates-join');
+    join.addEventListener('click', () => {
+      popupContexts.forEach(context => context.initialize());
+      join.setAttribute('aria-expanded', 'true');
+      const status = newsletter.querySelector('[data-lead-frame-status]');
+      status.tabIndex = -1;
+      status.focus();
+      join.hidden = true;
+    });
+  }
+  if (booklet) {
     addEventListener('mouseout', exitIntent);
     document.addEventListener('click', event => {
       if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const link = event.target.closest?.('a[href]');
+      if (link?.closest('#booklet, #booklet-dialog') && (link.hasAttribute('download') || link.getAttribute('href') === 'read.html')) {
+        rememberShown();
+        if (link.hasAttribute('download')) closeBanner();
+        return;
+      }
       if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
       if (link.origin === location.origin || !['http:', 'https:'].includes(link.protocol)) return;
-      if (shown || subscribed || dialog.open) return;
+      if (shown || dialog.open) return;
       openBanner(link.href);
       if (dialog.open) event.preventDefault();
     });
@@ -213,8 +223,8 @@
     let touchScroll = null;
     document.addEventListener('touchstart', event => {
       touchScroll = null;
-      if (shown || subscribed || event.touches.length !== 1) return;
-      const container = event.target.closest?.('.read-scroll') || document.scrollingElement;
+      if (shown || event.touches.length !== 1) return;
+      const container = document.scrollingElement;
       if (container && container.scrollTop > window.innerHeight) touchScroll = container;
     }, { passive: true });
     document.addEventListener('scroll', event => {

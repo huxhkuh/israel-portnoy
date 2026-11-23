@@ -10,10 +10,10 @@
   <link rel="preload" href="assets/fonts/body.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/vendor/pdfjs/web/pdf_viewer.css">
   <link rel="stylesheet" href="read.css?v=design3">
-  <link rel="stylesheet" href="newsletter.css">
+  <link rel="stylesheet" href="newsletter.css?v=2">
   <script src="leads-config.js" defer></script>
-  <script src="leads.js" defer></script>
-  <script type="module" src="read.mjs?v=2"></script>
+  <script src="leads.js?v=2" defer></script>
+  <script type="module" src="read.mjs?v=3"></script>
 </head>
 <body>
   <a class="read-skip" href="#reading-region">דילוג לחוברת</a>
@@ -72,6 +72,13 @@
     <div id="read-toast" class="read-toast" role="status" aria-live="polite" hidden></div>
   </div>
   <dialog id="read-copy-dialog" aria-labelledby="read-copy-title"><h2 id="read-copy-title">קישור למקום שבו אתם קוראים</h2><p>אפשר להעתיק את הכתובת ולפתוח אותה שוב מאותו עמוד.</p><input id="read-copy-url" type="text" readonly dir="ltr" aria-label="כתובת העמוד"><button id="read-copy-close" class="read-button" type="button">סגירה</button></dialog>
+  <dialog id="updates-dialog" class="site-invite" aria-labelledby="updates-title">
+    <form method="dialog"><button class="updates-close" type="submit" aria-label="סגירה" autofocus>×</button></form>
+    <h2 id="updates-title">לשלוח לכם גם את הסיפור הבא?</h2>
+    <p class="updates-invite">מדי פעם אני כותב על דירות שאני מלווה ועל מה שקורה בהן. אם תרצו, אשלח גם לכם במייל.</p>
+    <button class="updates-join" type="button" aria-expanded="false" aria-controls="reader-signup">להצטרפות לרשימת התפוצה</button>
+    <div id="reader-signup" class="subscription-form" data-updates-form hidden></div>
+  </dialog>
   <noscript><div class="read-noscript"><h1>להשקיע בנכס בלי לשקוע</h1><p>אפשר לקרוא את החוברת המלאה בקובץ ה־PDF.</p><a href="assets/להשקיע_בנכס_בלי_לשקוע_לקריאה.pdf">פתיחת החוברת</a> · <a href="index.html">חזרה לאתר</a></div></noscript>
 </body>
 </html>
