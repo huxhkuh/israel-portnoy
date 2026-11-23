@@ -15,6 +15,7 @@ body {margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--sans
 h1,h2,h3,p,figure {margin:0}
 a {text-decoration:none;color:inherit}
 button {font:inherit;cursor:pointer;color:inherit}
+button,.button {border-radius:4px}
 a,button,summary {-webkit-tap-highlight-color:transparent}
 :focus-visible {outline:3px solid var(--gold);outline-offset:4px}
 [hidden] {display:none!important}
