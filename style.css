@@ -3,7 +3,7 @@
 @font-face { font-family: Assistant; src: url("assets/fonts/body.woff2") format("woff2"); font-weight: 400; font-display: swap }
 @font-face { font-family: Assistant; src: url("assets/fonts/logo.woff2") format("woff2"); font-weight: 600; font-display: swap }
 @font-face { font-family: Assistant; src: url("assets/fonts/bodybold.woff2") format("woff2"); font-weight: 700; font-display: swap }
-@font-face { font-family:"Basurot Flex One"; src:url("assets/fonts/basurot-headline-bold.woff2?v=2") format("woff2"); font-weight:700; font-display:swap; ascent-override:88%; descent-override:12%; line-gap-override:0% }
+@font-face { font-family:"Basurot Flex One"; src:url("assets/fonts/basurot-headline-bold.woff2?v=3") format("woff2"); font-weight:700; font-display:swap; ascent-override:88%; descent-override:12%; line-gap-override:0% }
 :root {
   --paper:#fffdf6; --green:#063f2e; --gold:#c8a45f; --cream:#f8e9be; --ink:#183c2e; --muted:#405448; --accent:#755923; --line:#d9ddce; --tint:#eeefe6;
   --display:Karantina,Arial,sans-serif; --heading:Rubik,Arial,sans-serif; --sans:Assistant,Arial,sans-serif;
@@ -129,7 +129,7 @@ em {font-style:normal}
 .book-art img {grid-area:1 / 1;width:min(45%,245px);height:auto}
 .book-page {transform:translate(-47%,2%) rotate(-11deg);box-shadow:-3px 5px 2px #cbbf9b, -8px 14px 14px #483c2126}
 .book-cover {transform:translate(18%,-2%) rotate(4deg);box-shadow:-2px 2px #f5eed9,-4px 4px #bcaf89,-5px 5px #f5eed9,-7px 7px var(--green),-16px 24px 22px #4b432947}
-.book-copy h2 {font:700 clamp(70px,7.25vw,114px)/.88 var(--display);letter-spacing:-.015em}
+.book-copy h2 {font:700 clamp(70px,7.25vw,114px)/1.01 "Basurot Flex One",var(--display);letter-spacing:-.015em}
 .book-copy h3 {max-width:31ch;margin-top:22px;font:700 clamp(20px,1.7vw,26px)/1.35 var(--sans);letter-spacing:normal;text-wrap:pretty}
 .book-copy>p,.newsletter-intro {color:var(--muted);font-size:19px;line-height:1.5;max-width:39ch;margin:18px 0 21px}
 .book-copy>p {margin-block:8px 20px}
