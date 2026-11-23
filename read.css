@@ -3,6 +3,8 @@
 @font-face{font-family:BookDisplay;src:url('assets/fonts/display.woff2') format('woff2');font-weight:700;font-display:swap}
 :root{--read-green:#063f2e;--read-paper:#fffdf6;--read-ink:#173c2c;--read-muted:#536456;--read-rule:#d6dccd;--read-text-size:22px;color-scheme:light}
 *{box-sizing:border-box}
+.read-cover img,.read-pdf-scroll .page{border-radius:4px}
+.read-pdf-scroll .canvasWrapper{clip-path:inset(0 round 4px)}
 html,body{height:100%;margin:0;overflow:hidden}
 body{font:400 16px/1.55 BookBody,Arial,sans-serif;color:var(--read-ink);background:var(--read-paper);-webkit-font-smoothing:antialiased}
 button,input,a{-webkit-tap-highlight-color:transparent}
