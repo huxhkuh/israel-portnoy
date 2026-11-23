@@ -1,5 +1,6 @@
 const nav = document.querySelector(".navigation");
 const menu = document.querySelector(".menu-toggle");
+const header = document.querySelector(".header");
 
 function toggleMenu(open) {
   nav.classList.toggle("open", open);
@@ -7,9 +8,17 @@ function toggleMenu(open) {
   menu.setAttribute("aria-label", open ? "סגירת תפריט" : "פתיחת תפריט");
 }
 
-menu.addEventListener("click", () => toggleMenu(!nav.classList.contains("open")));
-nav.addEventListener("click", (event) => {
-  if (event.target.closest("a")) toggleMenu(false);
+menu.addEventListener("click", (event) => {
+  const open = !nav.classList.contains("open");
+  toggleMenu(open);
+  if (open && event.detail === 0) nav.querySelector("a").focus({ preventScroll: true });
+});
+document.addEventListener("click", (event) => {
+  if (!nav.classList.contains("open") || menu.contains(event.target)) return;
+  if (!nav.contains(event.target) || event.target.closest("a")) toggleMenu(false);
+});
+header.addEventListener("focusout", (event) => {
+  if (event.relatedTarget && !header.contains(event.relatedTarget)) toggleMenu(false);
 });
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && nav.classList.contains("open")) {
@@ -24,7 +33,8 @@ const sections = [...document.querySelectorAll("main > section")];
 let framePending = false;
 
 function updateNavigation() {
-  const threshold = Math.min(window.innerHeight * 0.35, 260);
+  header.classList.toggle("is-scrolled", window.scrollY > 8);
+  const threshold = Math.max(header.offsetHeight + 16, Math.min(window.innerHeight * 0.35, 260));
   const active = sections.filter((section) => section.getBoundingClientRect().top <= threshold).pop();
   const hash = "#" + (active?.id || "top");
   links.forEach((link) => {
