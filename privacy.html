@@ -6,13 +6,15 @@
   <meta name="theme-color" content="#063f2e">
   <title>מדיניות פרטיות | ישראל פורטנוי</title>
   <link rel="icon" href="assets/brand.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=masthead">
+  <link rel="stylesheet" href="style.css?v=floating-nav">
   <link rel="stylesheet" href="privacy.css">
+  <script src="site.js?v=floating-nav" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">דילוג למדיניות</a>
   <header class="header">
-    <div class="wrap header-row">
+    <button class="nav-recall" type="button" aria-controls="masthead" aria-label="הצגת סרגל הניווט" hidden>תפריט</button>
+    <div class="wrap header-row" id="masthead">
       <a class="brand" href="index.html" aria-label="ישראל פורטנוי, דף הבית">
         <img src="assets/brand.svg?v=masthead" width="75" height="46" alt="">
         <span>ישראל פורטנוי<small>נדל״ן | ניהול · ייעוץ · ליווי</small></span>

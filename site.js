@@ -1,6 +1,56 @@
 const nav = document.querySelector(".navigation");
 const menu = document.querySelector(".menu-toggle");
 const header = document.querySelector(".header");
+const headerRow = header.querySelector(".header-row");
+const recall = header.querySelector(".nav-recall");
+const hoverDevice = window.matchMedia("(any-hover: hover)");
+let revealedByMouse = false;
+let hideTimer = 0;
+
+function showHeader(moveFocus = false) {
+  clearTimeout(hideTimer);
+  hideTimer = 0;
+  const focusNavigation = moveFocus || document.activeElement === recall;
+  header.classList.remove("is-tucked");
+  headerRow.inert = false;
+  if (focusNavigation) {
+    const closedMobileMenu = menu?.offsetWidth && !nav.classList.contains("open");
+    const firstControl = closedMobileMenu ? menu : headerRow.querySelector(".navigation a, .policy-home");
+    firstControl.focus({ preventScroll: true });
+  }
+  recall.hidden = true;
+}
+
+function tuckHeader() {
+  if (window.scrollY <= header.offsetHeight || nav?.classList.contains("open") ||
+      headerRow.querySelector(":focus-visible") || (hoverDevice.matches && headerRow.matches(":hover"))) return;
+  revealedByMouse = false;
+  headerRow.inert = true;
+  header.classList.add("is-tucked");
+  recall.hidden = false;
+}
+
+recall.addEventListener("click", () => {
+  if (menu?.offsetWidth) toggleMenu(true);
+  showHeader(true);
+});
+document.addEventListener("pointermove", (event) => {
+  if (event.pointerType !== "mouse" || event.buttons) return;
+  if (event.clientY <= 24 && !recall.hidden) {
+    showHeader();
+    revealedByMouse = true;
+  }
+  if (!revealedByMouse) return;
+  if (event.clientY <= header.offsetHeight || header.contains(event.target)) {
+    clearTimeout(hideTimer);
+    hideTimer = 0;
+  } else if (!hideTimer) {
+    hideTimer = setTimeout(() => {
+      hideTimer = 0;
+      tuckHeader();
+    }, 550);
+  }
+}, { passive: true });
 
 function toggleMenu(open) {
   nav.classList.toggle("open", open);
@@ -8,32 +58,42 @@ function toggleMenu(open) {
   menu.setAttribute("aria-label", open ? "סגירת תפריט" : "פתיחת תפריט");
 }
 
-menu.addEventListener("click", (event) => {
+menu?.addEventListener("click", (event) => {
   const open = !nav.classList.contains("open");
   toggleMenu(open);
   if (open && event.detail === 0) nav.querySelector("a").focus({ preventScroll: true });
 });
 document.addEventListener("click", (event) => {
-  if (!nav.classList.contains("open") || menu.contains(event.target)) return;
+  if (!nav?.classList.contains("open") || menu.contains(event.target) || recall.contains(event.target)) return;
   if (!nav.contains(event.target) || event.target.closest("a")) toggleMenu(false);
 });
 header.addEventListener("focusout", (event) => {
-  if (event.relatedTarget && !header.contains(event.relatedTarget)) toggleMenu(false);
+  if (nav && event.relatedTarget && !header.contains(event.relatedTarget)) toggleMenu(false);
 });
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && nav.classList.contains("open")) {
+  if (event.key === "Escape" && nav?.classList.contains("open")) {
     toggleMenu(false);
     menu.focus();
   }
 });
-window.matchMedia("(max-width: 760px)").addEventListener("change", () => toggleMenu(false));
+if (menu) window.matchMedia("(max-width: 760px)").addEventListener("change", () => toggleMenu(false));
 
-const links = [...nav.querySelectorAll("a")];
+const links = [...document.querySelectorAll(".navigation a")];
 const sections = [...document.querySelectorAll("main > section")];
 let framePending = false;
+let lastY = Math.max(0, window.scrollY);
 
 function updateNavigation() {
-  header.classList.toggle("is-scrolled", window.scrollY > 8);
+  const y = Math.max(0, window.scrollY);
+  header.classList.toggle("is-scrolled", y > 8);
+  if (y <= header.offsetHeight || y <= lastY - 18) {
+    showHeader();
+    revealedByMouse = false;
+    lastY = y;
+  } else if (y >= lastY + 36) {
+    tuckHeader();
+    lastY = y;
+  }
   const threshold = Math.max(header.offsetHeight + 16, Math.min(window.innerHeight * 0.35, 260));
   const active = sections.filter((section) => section.getBoundingClientRect().top <= threshold).pop();
   const hash = "#" + (active?.id || "top");
